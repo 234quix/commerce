@@ -1,0 +1,39 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<!-- Display error messages -->
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<h1>Listing {{ listing.id }}</h1>
+
+
+    <h2>{{ listing.title }}</h2>
+    <p>{{ listing.description }}</p>
+    
+    {% if listing.url_to_picture %}
+        <img src="{{ listing.url_to_picture }}" alt="{{ listing.title }}">
+    {% endif %}
+    
+    <p>Starting Bid: {{ listing.starting_bid }}</p>
+    <!-- Display current bids -->
+    
+<ul>
+    {% for bid in bids %}
+        <li>{{ bid.bidder.username }} bid ${{ bid.amount }} on {{ bid.timestamp }}</li>
+    {% endfor %}
+</ul>
+
+    <form method="post" action="{% url 'listing' listing_id=listing.id %}">
+        {% csrf_token %}
+        {{ bid_form.as_p }}
+        <button type="submit">Place Bid</button>
+    </form>
+    
+    <a href="{% url 'index' %}">Back to Index</a>
+{% endblock %}
